@@ -3,7 +3,7 @@ const hamburguesas = [
         id: 1,
         nombre: "La Colombiana",
         precio: 25000,
-        img: "",
+        img: "../assets/",
         descripcion: "La hamburguesa que sabe a Colombia Jugosa carne Angus a la parrilla, acompañada de dulce plátano maduro, un huevo frito, lechuga fresca, tomate y cebolla"
 
     },
@@ -11,21 +11,21 @@ const hamburguesas = [
         id: 2,
         nombre: "La Mexicana",
         precio: 25000,
-        img: "",
+        img: "../assets/",
         descripcion: "Hamburguesa de res 110 g, pollo desmechado, carne de cerdo, jamón, tocineta, chorizo, guacamole, con queso mozzarella, vegetales frescos  "
     },
     {
         id: 3,
         nombre: "Crispy Burger",
         precio: 25000,
-        img: "",
+        img: "../assets/",
         descripcion: "Hamburguesa con 120 gr de carne 100% de res, queso cheddar, cebollas crocantes y salsas de la "
     },
     {
         id: 4,
         nombre: "Cheese Burger",
         precio: 22000,
-        img: "",
+        img: "../assets/",
         descripcion: "Hamburguesa con 120 gr. de carne 100% de res, queso cheddar, salsa de queso cheddar y pan brioche "
     }
 ]
@@ -33,7 +33,7 @@ const contenedorHamburguesas = document.getElementById("contenedor-hamburguesas"
 
 
 let carrito = conocerDatosStorage();
-
+let cantidad = 0
 renderizarTarjeta(hamburguesas)
 renderizarCarritoHTML();
 //funcion para mostrar el array de hamburguesas
@@ -50,6 +50,7 @@ function renderizarTarjeta(productos) {
         columnaDiv.innerHTML = `
             <div class="card text-center p-3 tienda__categoria-card">
                 <div class="card-body">
+                <img src="${hamburguesa.img}" alt="imagen de una hamburguesa" width="500" height="300">
                     <h5 class="card-title">${hamburguesa.nombre}</h5>
                     <p class="card-text small">${hamburguesa.descripcion}</p>
                     <p class="fw-bold text-dark">$${hamburguesa.precio}</p>
@@ -66,15 +67,24 @@ function renderizarTarjeta(productos) {
 }
 //agregamos funcion para el boton de agregar de cada card
 function agregarAlCarrito(id) {
-    //creamos una variable el array y va aguardar el primer elemento que tenga el mismo id en el array con el metodo find.
-    const hamburguesaAgregada = hamburguesas.find(hamburguesa => hamburguesa.id === id);
-    //agrega el elemento selecciona en elarray de carrito
-    carrito.push(hamburguesaAgregada)
-    console.log("la hamburguesa agregada es: " + JSON.stringify(hamburguesaAgregada))
-    //guardamos el elemento agregado en el array carrito en el storage con setItem
+    // Intentamos buscar si esa hamburguesa ya está en el carrito
+    const productoExistente = carrito.find(item => item.id === id);
+
+    if (productoExistente) {
+        productoExistente.cantidad++;
+    } else {
+        const hamburguesaOriginal = hamburguesas.find(h => h.id === id);
+
+        carrito.push({
+            id: hamburguesaOriginal.id,
+            nombre: hamburguesaOriginal.nombre,
+            precio: hamburguesaOriginal.precio,
+            cantidad: 1
+        });
+    }
     localStorage.setItem("carrito", JSON.stringify(carrito));
-    console.log("el carrito es: " + carrito)
-    renderizarCarritoHTML(JSON.stringify(carrito))
+    renderizarCarritoHTML();
+    actualizarTotal();
 }
 
 
@@ -85,7 +95,7 @@ function conocerDatosStorage() {
 
     //se valida de que existan datos, sí existen se realiza parseo de JSON a objeto y lo retorna
     if (datosStorage) {
-        dato = JSON.parse(datosStorage)
+        let dato = JSON.parse(datosStorage)
         console.log(typeof (dato))
         return dato
         // si esta vacio retorna array vacio de carrito
@@ -93,22 +103,42 @@ function conocerDatosStorage() {
         return []
     }
 }
-
+//funcion para renderizar la lista del carrito con el local storage
 function renderizarCarritoHTML() {
     const listaCarrito = document.getElementById("lista-carrito");
-    listaCarrito.innerHTML = "";
-
-    carrito.forEach((hamburguesa) => {
-    let li = document.createElement("li");
-    li.innerHTML = `
-        <div class="d-flex justify-content-between"> 
-            <div>
-                ${hamburguesa.nombre}  $${hamburguesa.precio}
-                <button type="button" class="btn-eliminar">eliminar</button>
-            </div>
-        </div>
-    `;
     
-    listaCarrito.appendChild(li);
-});
+    listaCarrito.innerHTML = "";
+    //recorre el carrito y va creando una lista con los productos almacenados en el local storage
+    carrito.forEach((hamburguesa) => {
+        let li = document.createElement("li");
+
+        li.innerHTML = `
+    <div class="d-flex justify-content-between"> 
+                <div>
+                     ${hamburguesa.nombre} <span class="fw-bold">x${hamburguesa.cantidad}</span>
+                </div>
+                <div>
+                    <span class="fw-bold">$${(hamburguesa.precio * hamburguesa.cantidad)}</span>
+                    <button type="button" class="btn btn-danger btn-sm">Eliminar</button>
+                </div>
+            </div><br>
+    `;
+
+        listaCarrito.appendChild(li);
+    });
+    //llamamos a actualizar total para que no se pierda el total al recargar la pagina
+    actualizarTotal()
+}
+//Funcion para actualza el total del carrito
+function actualizarTotal() {
+    //traemos el elemento y lo asignamos a total
+    const totalCarrito = document.getElementById("total-carrito");
+    //inicializamos una variable para que acumule los precios del producto
+    let acumulado = 0;
+    //recorremos el carrito con un foreach y realizamos el calculo con la cantidad por hamburguesa,
+    carrito.forEach((hamburguesa) => {
+        acumulado = acumulado + (hamburguesa.precio * hamburguesa.cantidad);
+    });
+
+    totalCarrito.textContent = acumulado;
 }
