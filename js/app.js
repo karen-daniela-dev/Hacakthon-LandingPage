@@ -31,13 +31,21 @@ const hamburguesas = [
 ]
 const contenedorHamburguesas = document.getElementById("contenedor-hamburguesas");
 
+
+let carrito =conocerDatosStorage();
+
 renderizarTarjeta(hamburguesas)
 //funcion para mostrar el array de hamburguesas
 function renderizarTarjeta(productos) {
+    //limpiamos el contenedor
     contenedorHamburguesas.innerHTML = "";
+    //se define un foreach para recorrer cada producto e renderizarlo con el dom
     productos.forEach((hamburguesa) => {
+        //creamos cada elemento
         let columnaDiv = document.createElement("div");
+        //añadimos a la clase las columnas por card
         columnaDiv.classList.add("col-md-3")
+        //insertamos al elemento creado la estructura
         columnaDiv.innerHTML = `
             <div class="card text-center p-3 tienda__categoria-card">
                 <div class="card-body">
@@ -49,8 +57,37 @@ function renderizarTarjeta(productos) {
                     </button>
                 </div>
             </div>`;
+            //insertamos por el DOM el elemento creado
         contenedorHamburguesas.appendChild(columnaDiv);
 
     })
 
+}
+//agregamos funcion para el boton de agregar de cada card
+function agregarAlCarrito(id){
+    //creamos una variable el array y va aguardar el primer elemento que tenga el mismo id en el array con el metodo find.
+    const hamburguesaAgregada = hamburguesas.find(hamburguesa => hamburguesa.id === id);
+    //agrega el elemento selecciona en elarray de carrito
+    carrito.push(hamburguesaAgregada)
+    console.log("la hamburguesa agregada es: " +JSON.stringify(hamburguesaAgregada))
+    //guardamos el elemento agregado en el array carrito en el storage con setItem
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+        console.log("el carrito es: " + carrito)
+}
+
+
+//funcion que obtiene el carrito guardado en local storage
+function conocerDatosStorage(){
+//variable para traer los datos que haya en storage     
+    let datosStorage = localStorage.getItem("carrito");
+
+    //se valida de que existan datos, sí existen se realiza parseo de JSON a objeto y lo retorna
+    if(datosStorage){
+        dato= JSON.parse(datosStorage)
+        console.log(typeof(dato))
+        return dato
+    // si esta vacio retorna array vacio de carrito
+    }else{
+        return []
+    }
 }
