@@ -175,7 +175,7 @@ html {
 .tienda__categoria-card {
   border-radius: 20px;
   border: none !important;
-  background-color: #FBFADA;
+  background-color: #E25D29;
   text-decoration: none;
   color: #1C2B1A;
   box-shadow: 0 4px 20px rgba(0,0,0,0.07);
@@ -355,13 +355,3 @@ html {
   }
 }
   /* fin inicio SECCIÓN PRODUCTOS */
-
-  .tienda__categoria-card {
-  border-radius: 20px;
-  border: none !important;
-  background-color: #FFF9F1;
-  text-decoration: none;
-  color: #1C2B1A;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
