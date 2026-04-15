@@ -74,6 +74,7 @@ function agregarAlCarrito(id) {
     //guardamos el elemento agregado en el array carrito en el storage con setItem
     localStorage.setItem("carrito", JSON.stringify(carrito));
     console.log("el carrito es: " + carrito)
+    actualizarNavbar();
     renderizarCarritoHTML(JSON.stringify(carrito))
 }
 
@@ -98,13 +99,14 @@ function renderizarCarritoHTML() {
     const listaCarrito = document.getElementById("lista-carrito");
     listaCarrito.innerHTML = "";
 
-    carrito.forEach((hamburguesa) => {
+    carrito.forEach((hamburguesa, index) => {
     let li = document.createElement("li");
     li.innerHTML = `
         <div class="d-flex justify-content-between"> 
             <div>
                 ${hamburguesa.nombre}  $${hamburguesa.precio}
-                <button type="button" class="btn-eliminar">eliminar</button>
+
+                <button type="button" class="btn-eliminar" onclick="eliminarProductos(${index})">eliminar</button>
             </div>
         </div>
     `;
@@ -112,3 +114,31 @@ function renderizarCarritoHTML() {
     listaCarrito.appendChild(li);
 });
 }
+
+function actualizarNavbar() {
+  let indicador = document.querySelector(".tienda__cart-badge");
+ 
+  if (indicador) {
+    let cantidadCarrito = carrito.length;
+    console.log(cantidadCarrito);
+ 
+    indicador.innerHTML = carrito.length;
+    if (carrito.length === 0) {
+      indicador.style.display = "none";
+    } else {
+      indicador.style.display = "inline-block";
+    }
+  }
+}
+ 
+function eliminarProductos(indice) {
+  //tengo que tomar el indice y pedirle que llame del localStorage y elimine el producto.
+  carrito.splice(indice, 1);
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  //ahora se cumple el eliminar de renderizarCarrito con el onclick
+  renderizarCarritoHTML();
+  actualizarNavbar();
+}
+ 
+ 
+actualizarNavbar();
