@@ -1,4 +1,4 @@
-/* ================= DATA ================= */
+/* ================= DATA BD================= */
 const hamburguesas = [
   {
     id: 1,
@@ -193,7 +193,7 @@ function actualizarTodo() {
   actualizarBadge();
 }
 
-/* ================= EFECTOS ================= */
+/* ================= EFECTO CRECER DEL LA BOLSA AL AGREGAR ================= */
 function animarIcono() {
   const icono = document.querySelector(".tienda__icon");
   if (!icono) return;
@@ -201,7 +201,7 @@ function animarIcono() {
   icono.classList.add("shake");
   setTimeout(() => icono.classList.remove("shake"), 300);
 }
-
+// NOTIFICACION CUANDO SE AGREGA UN PRODUCTO 
 function toast(nombre) {
   const t = document.createElement("div");
   t.innerText = `🍔 ${nombre} agregado`;
