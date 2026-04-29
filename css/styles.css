@@ -49,7 +49,7 @@ html {
 
 /* BOTÓN */
 .tienda__btn {
-  background-color: #f8e8c7;
+  background-color: #f2efea;
   color: #12372A;
   border-radius: 50px;
   padding: 12px 30px;
@@ -173,6 +173,9 @@ html {
 
 /* ── Tarjetas ── */
 .tienda__categoria-card {
+    display: flex;
+  flex-direction: column;
+  height: 100%;
   border-radius: 20px;
   border: none !important;
   background-color: #E25D29;
@@ -185,6 +188,11 @@ html {
 .tienda__categoria-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 30px rgba(228, 87, 46, 0.25);
+}
+.tienda__categoria-card .card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 /* FOOTER - Autor: Manuel */
@@ -253,6 +261,14 @@ html {
   transform-origin: bottom right;
   animation: girarDerecha 6s ease-in-out infinite;
 }
+/* OCULTAR HAMBURGUESAS EN PANTALLAS PEQUEÑAS */
+@media (max-width: 768px) {
+  .tienda__footer-burger {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+  }
+}
 
 @keyframes girarIzquierda {
   0%   { transform: rotate(0deg); }
@@ -305,39 +321,15 @@ html {
   background-color: #E4572E;
   border: none;
   border-radius: 30px;
+   margin-top: auto;
 }
 
 .tienda__categoria-card .btn:hover {
   background-color: #000;
+  
 }
 
 
-   /* CARRITO CATEGORIAS */
-
-.tienda__carrito {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 100px;
-}
-
-/* ITEMS DEL CARRITO */
-#lista-carrito li {
-  background: #f8f9fa;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 0.9rem;
-}
-
-
-
-/* TOTAL */
-.texto-total-carrito {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
 
 
 @media (max-width: 992px) {
@@ -361,41 +353,16 @@ html {
   font-size: 12px;
 }
 
-.carrito-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.cantidad-control {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.btn-cantidad {
-  background: orange;
-  border: none;
-  color: white;
-  padding: 3px 8px;
-  cursor: pointer;
-}
-
-.btn-eliminar {
-  background: red;
-  color: white;
-  border: none;
-  padding: 3px 6px;
-}
 
 
 
-.carrito-offcanvas {
-  background: linear-gradient(135deg, #e4572e, #ff7a3d);
-  color: #FBFADA;
-  border-left: none;
-}
+
+
+
+
+
+
+
 
 .carrito-offcanvas .offcanvas-header {
   border-bottom: 1px solid rgba(255,255,255,0.2);
@@ -414,12 +381,8 @@ html {
   padding: 20px;
 }
 
-#carrito-items .carrito-item {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 10px;
-}
 
+/* interacion al agregar al carrito  */
 .shake {
   animation: pop 0.3s ease;
 }
@@ -431,23 +394,50 @@ html {
 }
 
 
-/* ITEM DEL CARRITO */
-.carrito-item {
-  display: grid;
-  grid-template-columns: 60px 1fr auto auto;
-  align-items: center;
-  gap: 10px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 10px;
+
+
+
+/* ================= CARRITO MODERNO ================= */
+
+/* OFFCANVAS */
+.carrito-offcanvas {
+  background: linear-gradient(135deg, #e4572e, #ff7a3d);
+  color: #fff;
 }
 
-/* IMAGEN */
+.carrito-offcanvas .offcanvas-header {
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.carrito-offcanvas .offcanvas-body {
+  background: #fff;
+  color: #12372A;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+}
+
+/* ITEM */
+.carrito-item {
+  display: grid;
+  grid-template-columns: 50px 1fr auto auto; /* 👈 4 columnas reales */
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+.carrito-item:hover {
+  transform: scale(1.02);
+}
+
+/* IMG */
 .carrito-img {
-  width: 55px;
-  height: 55px;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 /* INFO */
@@ -457,68 +447,92 @@ html {
   font-size: 0.85rem;
 }
 
+.carrito-info strong {
+  font-size: 0.9rem;
+}
+
+.carrito-info span {
+  opacity: 0.7;
+}
+
 /* CONTROLES */
 .cantidad-control {
   display: flex;
   align-items: center;
+  justify-content: center; /* 👈 centra dentro de su columna */
   gap: 6px;
 }
 
+/* BOTONES + / - */
 .btn-cantidad {
-  background: #E4572E;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
   border: none;
+  background: #E4572E;
   color: white;
-  padding: 4px 10px;
-  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-weight: bold;
+  transition: all 0.2s ease;
 }
 
 .btn-cantidad:hover {
   background: #000;
+  transform: scale(1.1);
 }
 
-/* ACCIONES */
+/* NUMERO */
+.cantidad-control span {
+  font-size: 0.85rem;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* ACCIONES (derecha) */
 .carrito-acciones {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 5px;
+  justify-content: center; /* 👈 CLAVE */
+  gap: 4px;
 }
 
 /* SUBTOTAL */
 .subtotal {
-  font-size: 0.85rem;
-  font-weight: bold;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
-/* ELIMINAR */
+/* BOTON ELIMINAR */
 .btn-eliminar {
-  background: crimson;
-  color: white;
+  background: transparent;
   border: none;
-  padding: 3px 7px;
-  border-radius: 6px;
+  color: #999;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn-eliminar:hover {
-  background: black;
+  color: crimson;
+  transform: scale(1.2);
 }
 
-.offcanvas {
-  border-left: none;
+/* TOTAL */
+#total-carrito {
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
-.offcanvas-header {
-  background: linear-gradient(135deg, #e4572e, #ff7a3d);
-  color: white;
-}
 
-.offcanvas-title {
-  font-weight: 800;
-}
 
-.offcanvas-body {
-  background: #fff;
-}
+
+
+
+
+
+
+
