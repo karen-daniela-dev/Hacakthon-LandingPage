@@ -5,7 +5,7 @@ const hamburguesas = [
     precio: 25000,
     img: "../assets/mega-stack.png",
     descripcion:
-      "La hamburguesa que sabe a Colombia: Carne Angus, plátano maduro, huevo frito y vegetales.",
+      "Carne Angus, plátano maduro, huevo frito y vegetales.",
   },
   {
     id: 2,
@@ -13,173 +13,175 @@ const hamburguesas = [
     precio: 25000,
     img: "assets/double-beast.png",
     descripcion:
-      "Res, pollo desmechado, cerdo, jamón, tocineta, chorizo y guacamole.",
+      "Res, pollo, cerdo, jamón, tocineta y guacamole.",
   },
   {
     id: 3,
     nombre: "Crispy Burger",
     precio: 25000,
     img: "assets/golden-crunch-hero.png",
-    descripcion: "120g de carne de res, queso cheddar y cebollas crocantes.",
+    descripcion: "Carne, cheddar y cebolla crocante.",
   },
   {
     id: 4,
     nombre: "Cheese Burger",
     precio: 22000,
     img: "assets/full-stack.png",
-    descripcion:
-      "120g de carne de res, queso cheddar, salsa especial y pan brioche.",
+    descripcion: "Carne, cheddar, salsa especial.",
   },
 ];
-const contenedorHamburguesas = document.getElementById(
-  "contenedor-hamburguesas",
-);
-const botonVaciar = document.getElementById("btn-vaciar");
- 
-let carrito = conocerDatosStorage();
- 
-renderizarTarjeta(hamburguesas);
-renderizarCarritoHTML();
-actualizarTotal();
- 
-botonVaciar.addEventListener("click", () => {
-  if (confirm("¿Estás seguro de que quieres vaciar todo tu carrito?")) {
-    carrito = [];
-    localStorage.removeItem("carrito");
-    renderizarCarritoHTML();
-    actualizarTotal();
-    actualizarNavbar();
-  }
-});
- 
-//funcion para mostrar el array de hamburguesas
-function renderizarTarjeta(productos) {
-  //limpiamos el contenedor
-  contenedorHamburguesas.innerHTML = "";
-  //se define un foreach para recorrer cada producto e renderizarlo con el dom
-  productos.forEach((hamburguesa) => {
-    //creamos cada elemento
-    let columnaDiv = document.createElement("div");
-    //añadimos a la clase las columnas por card
-    columnaDiv.classList.add("col-md-3");
-    //insertamos al elemento creado la estructura
-    columnaDiv.innerHTML = `
-            <div class="card text-center p-3 tienda__categoria-card">
-                <img src="${hamburguesa.img}" alt="imagen de una hamburguesa" max-width="300">
- 
-                <div class="card-body">
-                    <h5 class="card-title">${hamburguesa.nombre}</h5>
-                    <p class="card-text small">${hamburguesa.descripcion}</p>
-                    <p class="fw-bold text-dark">$${hamburguesa.precio}</p>
-                    <button class="btn btn-primary" onclick="agregarAlCarrito(${hamburguesa.id})">
-                        Agregar
-                    </button>
-                </div>
-            </div>`;
-    //insertamos por el DOM el elemento creado
-    contenedorHamburguesas.appendChild(columnaDiv);
-  });
-}
-//agregamos funcion para el boton de agregar de cada card
-function agregarAlCarrito(id) {
-  //creamos una variable el array y va aguardar el primer elemento que tenga el mismo id en el array con el metodo find.
-  const hamburguesaAgregada = hamburguesas.find(
-    (hamburguesa) => hamburguesa.id === id,
-  );
-  //agrega el elemento selecciona en elarray de carrito
-  carrito.push(hamburguesaAgregada);
-  console.log(
-    "la hamburguesa agregada es: " + JSON.stringify(hamburguesaAgregada),
-  );
-  //guardamos el elemento agregado en el array carrito en el storage con setItem
-  localStorage.setItem("carrito", JSON.stringify(carrito));
-  console.log("el carrito es: " + carrito);
-  actualizarNavbar();
-  renderizarCarritoHTML(JSON.stringify(carrito));
-  actualizarTotal();
-  console.log("revisar omeee");
-}
- 
-//funcion que obtiene el carrito guardado en local storage
-function conocerDatosStorage() {
-  //variable para traer los datos que haya en storage
-  let datosStorage = localStorage.getItem("carrito");
- 
-  //se valida de que existan datos, sí existen se realiza parseo de JSON a objeto y lo retorna
-  if (datosStorage) {
-    dato = JSON.parse(datosStorage);
-    console.log(typeof dato);
-    return dato;
-    // si esta vacio retorna array vacio de carrito
-  } else {
-    return [];
-  }
-}
- 
-function renderizarCarritoHTML() {
-  const listaCarrito = document.getElementById("lista-carrito");
-  listaCarrito.innerHTML = "";
-  //junto al
-  carrito.forEach((hamburguesa, index) => {
-    let li = document.createElement("li");
- 
-    li.innerHTML = `
-    <div class="d-flex justify-content-between">
-        <div>
-            ${hamburguesa.nombre}  $${hamburguesa.precio}
-            <button type="button" class="btn-eliminar" onclick="eliminarProductos(${index})">eliminar</button>
+
+const contenedor = document.getElementById("contenedor-hamburguesas");
+
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+/* ================= RENDER PRODUCTOS ================= */
+function renderizarProductos() {
+  contenedor.innerHTML = "";
+
+  hamburguesas.forEach((p) => {
+    contenedor.innerHTML += `
+      <div class="col-md-3">
+        <div class="card text-center p-3 tienda__categoria-card">
+          <img src="${p.img}" class="img-fluid">
+          <div class="card-body">
+            <h5>${p.nombre}</h5>
+            <p class="small">${p.descripcion}</p>
+            <p class="fw-bold">$${p.precio}</p>
+            <button class="btn btn-primary" onclick="agregar(${p.id})">
+              Agregar
+            </button>
+          </div>
         </div>
-       
-    </div>
-`; //aquí acabamos de crear la lista y tambien el botón de eliminar.
-    console.log("ya se creó, vamos bien.");
- 
-    listaCarrito.appendChild(li);
+      </div>
+    `;
   });
+}
+
+/* ================= AGREGAR ================= */
+function agregar(id) {
+  const producto = hamburguesas.find(p => p.id === id);
+  const existe = carrito.find(p => p.id === id);
+
+  if (existe) {
+    existe.cantidad++;
+  } else {
+    carrito.push({ ...producto, cantidad: 1 });
+  }
+
+  guardar();
+  renderCarrito();
+  actualizarBadge();
+  animarIcono();
+  toast(producto.nombre);
+}
+
+/* ================= RENDER CARRITO ================= */
+function renderCarrito() {
+  const cont = document.getElementById("carrito-items");
+  cont.innerHTML = "";
+
+  carrito.forEach(p => {
+    cont.innerHTML += `
+      <div class="carrito-item">
+        <div>
+          <strong>${p.nombre}</strong><br>
+          $${p.precio}
+        </div>
+
+        <div class="cantidad-control">
+          <button class="btn-cantidad" onclick="cambiar(${p.id}, -1)">-</button>
+          <span>${p.cantidad}</span>
+          <button class="btn-cantidad" onclick="cambiar(${p.id}, 1)">+</button>
+        </div>
+
+        <div>
+          $${p.precio * p.cantidad}<br>
+          <button class="btn-eliminar" onclick="eliminar(${p.id})">x</button>
+        </div>
+      </div>
+    `;
+  });
+
   actualizarTotal();
 }
- 
-function actualizarNavbar() {
-  let indicador = document.querySelector(".tienda__cart-badge");
- 
-  if (indicador) {
-    let cantidadCarrito = carrito.length;
-    console.log(cantidadCarrito);
- 
-    indicador.innerHTML = carrito.length;
-    if (carrito.length === 0) {
-      indicador.style.display = "none";
-    } else {
-      indicador.style.display = "inline-block";
-    }
+
+/* ================= FUNCIONES ================= */
+function cambiar(id, cambio) {
+  const prod = carrito.find(p => p.id === id);
+  prod.cantidad += cambio;
+
+  if (prod.cantidad <= 0) {
+    eliminar(id);
+    return;
   }
+
+  guardar();
+  renderCarrito();
+  actualizarBadge();
 }
- 
-function eliminarProductos(indice) {
-  //tengo que tomar el indice y pedirle que llame del localStorage y elimine el producto.
-  carrito.splice(indice, 1);
-  localStorage.setItem("carrito", JSON.stringify(carrito));
-  //ahora se cumple el eliminar de renderizarCarrito con el onclick
-  renderizarCarritoHTML();
-  actualizarNavbar();
+
+function eliminar(id) {
+  carrito = carrito.filter(p => p.id !== id);
+  guardar();
+  renderCarrito();
+  actualizarBadge();
 }
- 
-//Funcion para actualza el total del carrito
-function actualizarTotal() {
-  //traemos el elemento y lo asignamos a total
-  const totalCarrito = document.getElementById("total-carrito");
-  //inicializamos una variable para que acumule los precios del producto
-  let acumulado = 0;
-  //recorremos el carrito con un foreach y realizamos el calculo con la cantidad por hamburguesa,
-  carrito.forEach((hamburguesa) => {
-    acumulado = acumulado + hamburguesa.precio;
-  });
- 
-  totalCarrito.textContent = acumulado;
-}
- 
+
 function vaciarCarrito() {
-  localStorage.clear();
+  carrito = [];
+  guardar();
+  renderCarrito();
+  actualizarBadge();
 }
-actualizarNavbar();
- 
+
+function actualizarTotal() {
+  const total = document.getElementById("total-carrito");
+
+  const suma = carrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
+
+  total.textContent = "$" + suma;
+}
+
+function actualizarBadge() {
+  const badge = document.querySelector(".tienda__cart-badge");
+  if (!badge) return;
+
+  const total = carrito.reduce((acc, p) => acc + p.cantidad, 0);
+
+  badge.textContent = total;
+  badge.style.display = total === 0 ? "none" : "flex";
+}
+
+function guardar() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+/* ================= EFECTOS ================= */
+function animarIcono() {
+  const icono = document.querySelector(".tienda__icon");
+  icono.classList.add("shake");
+
+  setTimeout(() => icono.classList.remove("shake"), 300);
+}
+
+function toast(nombre) {
+  const t = document.createElement("div");
+  t.innerText = `🍔 ${nombre} agregado`;
+  t.style.position = "fixed";
+  t.style.bottom = "20px";
+  t.style.right = "20px";
+  t.style.background = "#E4572E";
+  t.style.color = "#fff";
+  t.style.padding = "10px 20px";
+  t.style.borderRadius = "10px";
+  t.style.zIndex = "9999";
+
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
+/* ================= INIT ================= */
+renderizarProductos();
+renderCarrito();
+actualizarBadge();

@@ -50,7 +50,7 @@
 
 
             <!-- carrito -->
-            <a href="#" class="tienda__icon position-relative" style="text-decoration: none;">
+            <a class="tienda__icon position-relative" data-bs-toggle="offcanvas" data-bs-target="#carritoCanvas">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color: white" fill="currentColor"
                 class="bi bi-bag" viewBox="0 0 16 16">
                 <path
@@ -161,6 +161,36 @@
     <img src="./assets/mega-stack.png" alt="burger derecha" class="tienda__footer-burger tienda__footer-burger--right">
 
   </footer>
+
+  <!-- OFFCANVAS DEL CARRITO -->
+  <div class="offcanvas offcanvas-end carrito-offcanvas" tabindex="-1" id="carritoCanvas">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">🛒 Tu pedido</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column">
+
+      <!-- PRODUCTOS -->
+      <div id="carrito-items" class="flex-grow-1"></div>
+
+      <hr>
+
+      <!-- TOTAL -->
+      <p class="fw-bold">
+        Total: <span id="total-carrito">$0</span>
+      </p>
+      <button onclick="vaciarCarrito()" class="btn btn-danger w-100 mt-2">
+        Vaciar carrito
+      </button>
+
+      <!-- BOTON WHATSAPP -->
+      <a id="btn-whatsapp" target="_blank" class="btn btn-success w-100">
+        Pedir por WhatsApp
+      </a>
+
+    </div>
+  </div>
 
 
 
