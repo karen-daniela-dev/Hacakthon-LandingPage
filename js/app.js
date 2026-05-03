@@ -191,6 +191,7 @@ function actualizarTodo() {
   renderCarrito();
   actualizarTotal();
   actualizarBadge();
+  actualizarBotonWhatsApp();
 }
 
 /* ================= EFECTO CRECER DEL LA BOLSA AL AGREGAR ================= */
@@ -222,6 +223,45 @@ function toast(nombre) {
 
   setTimeout(() => t.remove(), 2000);
 }
+// GENERAR MENSAJE POR WHATSAAP 
+
+
+function generarMensajeWhatsApp() {
+  if (carrito.length === 0) {
+    return encodeURIComponent("Hola, aún no he agregado productos.");
+  }
+
+  let mensaje = "*Pedido de hamburguesas*\n\n";
+
+  carrito.forEach((p) => {
+    mensaje += `• *${p.nombre}* x${p.cantidad} - ${formatearCOP(p.precio * p.cantidad)}\n`;
+  });
+
+  const total = carrito.reduce(
+    (acc, p) => acc + p.precio * p.cantidad,
+    0
+  );
+
+  mensaje += `\n *Total:* ${formatearCOP(total)}`;
+
+  return encodeURIComponent(mensaje);
+}
+
+function actualizarBotonWhatsApp() {
+  const btn = document.getElementById("btn-whatsapp");
+
+  const numero = "573117226230"; 
+
+  const mensaje = generarMensajeWhatsApp();
+
+  const url = `https://wa.me/${numero}?text=${mensaje}`;
+
+  btn.href = url;
+}
+
+
+
+
 
 /* ================= INIT ================= */
 renderizarProductos();
